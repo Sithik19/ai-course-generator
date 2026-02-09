@@ -1,0 +1,52 @@
+{
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Run db:push",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": [
+                "run",
+                "db:push"
+            ],
+            "cwd": "${workspaceFolder}",
+            "internalConsoleOptions": "neverOpen"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Run db:push",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": [
+                "run",
+                "db:push"
+            ],
+            "cwd": "${workspaceFolder}",
+            "internalConsoleOptions": "neverOpen"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Run db:push",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": [
+                "run",
+                "db:push"
+            ],
+            "cwd": "${workspaceFolder}",
+            "internalConsoleOptions": "neverOpen"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Run db:push",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": [
+                "run",
+                "db:push"
+            ],
+            "cwd": "${workspaceFolder}",
+            "internalConsoleOptions": "neverOpen"
+        }
+    ]
+}
