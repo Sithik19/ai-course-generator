@@ -95,41 +95,43 @@ function CourseLayout() {
       // Clear any existing chapters for this course ID first to avoid duplicate entries
       await db.delete(Chapters).where(eq(Chapters.courseId, course?.courseId));
       
-      for (let index = 0; index < chapters.length; index++) {
-        const chapter = chapters[index];
-        const PROMPT='Explain the concept in Detail on Topic: '+course?.name+', Chapter: '+chapter?.chapter_name+', in JSON Format with list of array with field as title, description in detail, Code Example(Code field in <precode > format) if applicable. The entire response (title, description, etc.) must be written in '+language+' language.';
-        console.log(PROMPT);
+      const concurrencyLimit = 3; // Process 3 chapters concurrently at a time
+      for (let i = 0; i < chapters.length; i += concurrencyLimit) {
+        const chunk = chapters.slice(i, i + concurrencyLimit);
         
-        let videoId='';
-        try {
-          //Generate Video URL 
-          const searchQuery = course?.name + ': ' + chapter?.chapter_name + ' in ' + language;
-          const resp = await ServiceWorker.getVideos(searchQuery);
-          console.log(resp);
-          videoId = resp[0]?.id?.videoId || '';
-        } catch (videoErr) {
-          console.error("Error fetching video for chapter:", videoErr);
-        }
+        const promises = chunk.map(async (chapter, chunkIndex) => {
+          const index = i + chunkIndex;
+          const PROMPT = 'Explain the concept in Detail on Topic: ' + course?.name + ', Chapter: ' + chapter?.chapter_name + ', in JSON Format with list of array with field as title, description in detail, Code Example(Code field in <precode > format) if applicable. The entire response (title, description, etc.) must be written in ' + language + ' language.';
+          console.log(PROMPT);
 
-        // Generate Chapter Content
-        const result=await sendMessageWithRetry(GenerateChapterContent_AI, PROMPT); 
-        const rawText = result?.response?.text();
-        console.log(rawText);
-        const content = cleanAndParseJson(rawText);
-        
-        // Save Chapter Content + Video URL
-        await db.insert(Chapters).values({ 
-          chapterId:index, 
-          courseId:course?.courseId, 
-          content:content,  
-          videoId:videoId              
+          let videoId = '';
+          try {
+            // Generate Video URL 
+            const searchQuery = course?.name + ': ' + chapter?.chapter_name + ' in ' + language;
+            const resp = await ServiceWorker.getVideos(searchQuery);
+            videoId = resp[0]?.id?.videoId || '';
+          } catch (videoErr) {
+            console.error("Error fetching video for chapter:", videoErr);
+          }
+
+          // Generate Chapter Content
+          const result = await sendMessageWithRetry(GenerateChapterContent_AI, PROMPT);
+          const rawText = result?.response?.text();
+          const content = cleanAndParseJson(rawText);
+
+          // Save Chapter Content + Video URL
+          await db.insert(Chapters).values({
+            chapterId: index,
+            courseId: course?.courseId,
+            content: content,
+            videoId: videoId
+          });
         });
 
-        // Add 1 second delay to avoid rate limiting
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await Promise.all(promises);
       }
       
-      router.replace('/create-course/'+course?.courseId+'/finish');
+      router.replace('/create-course/' + course?.courseId + '/finish');
     } catch (e) {
       console.error("Error generating chapter content:", e);
     } finally {
