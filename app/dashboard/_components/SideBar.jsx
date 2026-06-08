@@ -16,7 +16,7 @@ import { checkUserSubscription } from "@/configs/subscription";
 
 const ADMIN_EMAILS = ['sithikranjan25@gmail.com', '717823i155@kce.ac.in'];
 
-function SideBar() {
+function SideBar({ closeMenu }) {
   const { user } = useUser();
   const {userCourseList,setUserCourseList} = React.useContext(UserCourseListContext);
   const { signOut } = useClerk();
@@ -49,7 +49,7 @@ function SideBar() {
   const path = usePathname();
 
   return (
-    <div className="fixed h-full md:w-64 p-5 shadow-sm border-r bg-white dark:bg-slate-900 border-gray-100 dark:border-slate-800 text-slate-900 dark:text-slate-100 transition-colors duration-200">
+    <div className="h-full w-full p-5 shadow-sm border-r bg-white dark:bg-slate-900 border-gray-100 dark:border-slate-800 text-slate-900 dark:text-slate-100 transition-colors duration-200">
       <Image
         src="/logo.svg"
         width={160}
@@ -65,7 +65,10 @@ function SideBar() {
           <li key={item.id}>
             {item.name === "Logout" ? (
               <div
-                onClick={() => signOut({ redirectUrl: "/" })}
+                onClick={() => {
+                  signOut({ redirectUrl: "/" });
+                  closeMenu?.();
+                }}
                 className={`flex items-center gap-3 p-3 cursor-pointer rounded-lg mb-3 transition-colors ${
                   item.path === path 
                     ? "bg-blue-50 dark:bg-slate-800 text-blue-600 dark:text-blue-400 font-semibold" 
@@ -76,7 +79,7 @@ function SideBar() {
                 <h2>{item.name}</h2>
               </div>
             ) : (
-              <Link href={item.path}>
+              <Link href={item.path} onClick={() => closeMenu?.()}>
                 <div
                   className={`flex items-center gap-3 p-3 cursor-pointer rounded-lg mb-3 transition-colors ${
                     item.path === path 

@@ -1,25 +1,32 @@
 import React from 'react'
 import YouTube from 'react-youtube';
 import ReactMarkdown from 'react-markdown'
- const opts = {
-      height: '390',
-      width: '640',
-      playerVars: {
-        // https://developers.google.com/youtube/player_parameters
-        autoplay: 0,
-      }
- };
+
 function ChapterContent({chapter,content}) {
   return (
-    <div className='p-10'>
+    <div className='p-5 md:p-10'>
       <h2 className='font-medium text-2xl'>{chapter?.chapter_name}</h2>
       <p className='text-gray-500'>{chapter?.description}</p>
 
-      <div className='flex justify-center my-6'>
-      {/* Video */}
-      <YouTube
-      videoId={content?.videoId}
-      opts={opts}/>
+      <div className='my-6 w-full aspect-video max-w-2xl mx-auto overflow-hidden rounded-xl shadow-sm border border-gray-100 dark:border-slate-800'>
+        {content?.videoId ? (
+          <YouTube
+            videoId={content.videoId}
+            opts={{
+              height: '100%',
+              width: '100%',
+              playerVars: {
+                autoplay: 0,
+              }
+            }}
+            className='w-full h-full'
+            containerClassName='w-full h-full aspect-video'
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-slate-100 dark:bg-slate-800 text-gray-400 text-sm">
+            No Video Selected
+          </div>
+        )}
       </div>
 
       {/* Content */}

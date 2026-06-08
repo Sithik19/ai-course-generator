@@ -50,22 +50,18 @@ function CourseStart({ params }) {
   };
 
   return (
-    <div className='flex'>
+    <div className='flex flex-col md:flex-row'>
       {/* Sidebar Area */}
-      <div className='fixed md:w-72 h-screen border-r border-gray-100 dark:border-slate-800 shadow-sm overflow-y-auto bg-white dark:bg-slate-900'>
-        <h2 className='font-medium text-lg bg-blue-600 p-4 text-white sticky top-0'>
+      <div className='w-full md:w-72 md:fixed md:h-screen border-b md:border-b-0 md:border-r border-gray-100 dark:border-slate-800 shadow-sm md:overflow-y-auto bg-white dark:bg-slate-900 order-2 md:order-1'>
+        <h2 className='font-medium text-lg bg-blue-600 p-4 text-white sticky top-0 z-10'>
           {course?.courseOutput?.course_name || "Loading Course..."}
         </h2>
 
-        <div className='p-2'>
+        <div className='p-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 gap-1'>
           {course?.courseOutput?.chapters.map((chapter, index) => (
             <div
               key={index}
-              className={`cursor-pointer transition-all rounded-lg mb-1 hover:bg-violet-100 dark:hover:bg-slate-800  ${
-                selectedChapter?.title === chapter?.title 
-              
-                
-              }`}
+              className={`cursor-pointer transition-all rounded-lg hover:bg-violet-100 dark:hover:bg-slate-800`}
               onClick={() => {
                 setSelectedChapter(chapter); // Sets UI info
                 GetSelectedChapterContent(index); // Fetches DB video
@@ -78,7 +74,7 @@ function CourseStart({ params }) {
       </div>
 
       {/* Main Content Area */}
-      <div className='md:ml-72 w-full'>
+      <div className='w-full md:ml-72 order-1 md:order-2'>
         <ChapterContent 
           chapter={selectedChapter} 
           content={chapterContent} 
