@@ -51,7 +51,7 @@ function FinishScreen() {
             href={process.env.NEXT_PUBLIC_HOST_NAME + "/course/" + course?.courseId} 
             target="_blank" 
             rel="noopener noreferrer" 
-            className="text-blue-500 hover:underline cursor-pointer flex-1 text-left"
+            className="text-blue-500 hover:underline cursor-pointer flex-1 text-left break-all"
           >
             {process.env.NEXT_PUBLIC_HOST_NAME}/course/{course?.courseId}
           </a>

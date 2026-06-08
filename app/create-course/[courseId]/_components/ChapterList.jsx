@@ -7,18 +7,18 @@ function ChapterList({course,refreshData,edit=true}) {
     <div className='mt-3'>
       <h2 className='font-medium text-xl'>Chapters</h2>
       <div className='mt-2'>
-        {course?.courseOutput?.chapters?.map((chapter,index)=>(
-            <div key={chapter.id || index} className='border border-gray-200 dark:border-slate-800 p-5 rounded-lg mb-2 flex items-center justify-between bg-white dark:bg-slate-900' >
-            <div className='flex gap-5 items-center'>
-                <h2 className='bg-blue-500 h-10 w-10 text-white rounded-full text-center p-2 flex-none'>{index+1}</h2>
-                <div>
-                    <h2 className='font-medium text-lg'>{chapter?.chapter_name} {edit && <EditChapters course={course} index={index} refreshData={refreshData} />}</h2>
-                    <p className='text-sm text-gray-500 dark:text-slate-400'>{chapter?.about}</p>
-                    <p className='flex gap-2 text-blue-500 items-center'><FaClockRotateLeft/>{chapter?.duration}</p>
-                </div>
+        {course?.courseOutput?.chapters?.map((chapter, index) => (
+          <div key={chapter.id || index} className='border border-gray-200 dark:border-slate-800 p-5 rounded-lg mb-2 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-slate-900' >
+            <div className='flex gap-4 items-start'>
+              <h2 className='bg-blue-500 h-10 w-10 text-white rounded-full text-center p-2 flex-none'>{index+1}</h2>
+              <div>
+                <h2 className='font-medium text-lg'>{chapter?.chapter_name} {edit && <EditChapters course={course} index={index} refreshData={refreshData} />}</h2>
+                <p className='text-sm text-gray-500 dark:text-slate-400'>{chapter?.about}</p>
+                <p className='flex gap-2 text-blue-500 items-center mt-1'><FaClockRotateLeft/>{chapter?.duration}</p>
+              </div>
             </div>
-             <FaRegCheckCircle className="text-4xl text-gray-300 flex-none" />
-            </div>
+            <FaRegCheckCircle className="text-4xl text-gray-300 flex-none self-end sm:self-center" />
+          </div>
         ))}
 
       </div>
