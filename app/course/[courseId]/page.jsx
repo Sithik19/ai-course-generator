@@ -10,6 +10,7 @@ import CourseBasicInfo from '@/app/create-course/[courseId]/_components/CourseBa
 import ChapterList from '@/app/create-course/[courseId]/_components/ChapterList'
 import CourseDetail from '@/app/create-course/[courseId]/_components/CourseDetail'
 import Header from '@/app/_components/Header'
+import { normalizeCourse } from '@/configs/dbNormalize'
 
 function Course() {
   const params = useParams()
@@ -36,7 +37,7 @@ function Course() {
         throw new Error("Course not found")
       }
 
-      setCourse(result[0])
+      setCourse(normalizeCourse(result[0]))
 
     } catch (err) {
       console.error("Error fetching course:", err)
@@ -55,9 +56,9 @@ function Course() {
         {/* Loading State */}
         {loading && (
           <div className="space-y-4 animate-pulse">
-            <div className="h-10 bg-gray-200 rounded w-2/3"></div>
-            <div className="h-32 bg-gray-200 rounded"></div>
-            <div className="h-48 bg-gray-200 rounded"></div>
+            <div className="h-10 bg-gray-200 dark:bg-slate-800 rounded w-2/3"></div>
+            <div className="h-32 bg-gray-200 dark:bg-slate-800 rounded"></div>
+            <div className="h-48 bg-gray-200 dark:bg-slate-800 rounded"></div>
           </div>
         )}
 

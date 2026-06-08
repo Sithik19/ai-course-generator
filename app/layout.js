@@ -15,7 +15,25 @@ export default function RootLayout({ children }) {
 
   return (
     <ClerkProvider>
-      <html lang="en">
+      <html lang="en" suppressHydrationWarning>
+        <head>
+          <link rel="icon" href="/m_Logo.svg" type="image/svg+xml" />
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+                try {
+                  const savedTheme = localStorage.getItem('theme');
+                  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                  if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+                    document.documentElement.classList.add('dark');
+                  } else {
+                    document.documentElement.classList.remove('dark');
+                  }
+                } catch (_) {}
+              `
+            }}
+          />
+        </head>
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
           {/* 2. Provide the state and setter to the entire app */}
           <UserCourseListContext.Provider value={{ userCourseList, setUserCourseList }}>

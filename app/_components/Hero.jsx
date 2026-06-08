@@ -3,18 +3,18 @@ import Link from 'next/link' // 1. Import Link
 
 function Hero() {
   return (
-    <section className="min-h-screen flex items-center justify-center bg-white">
+    <section className="min-h-screen flex items-center justify-center bg-white dark:bg-slate-950 transition-colors duration-200">
       <div className="mx-auto max-w-screen-md px-4 text-center">
         <h1 className="text-4xl font-bold sm:text-5xl">
           <span className="block text-blue-500">
             AI Course Generator
           </span>
-          <span className="block text-black">
+          <span className="block text-black dark:text-white">
             Custom Learning Paths, Powered by AI
           </span>
         </h1>
 
-        <p className="mt-4 text-base sm:text-lg text-gray-700">
+        <p className="mt-4 text-base sm:text-lg text-gray-700 dark:text-slate-300">
           Unlock personalized education with AI-driven course creation. Tailored learning paths to suit your goals and pace.
         </p>
 

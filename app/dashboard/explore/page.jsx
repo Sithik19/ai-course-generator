@@ -5,6 +5,8 @@ import { db } from '@/configs/db'
 import CourseCard from '@/app/dashboard/_components/CourseCard'
 import { Button } from "@/components/ui/button";
 
+import { normalizeCourse } from '@/configs/dbNormalize'
+
 function Explore() {
   const [courseList, setCourseList] = useState([]);
   const [pageIndex,setPageIndex] = useState(0);
@@ -21,8 +23,9 @@ function Explore() {
         .limit(9)
         .offset(pageIndex*9);
       
-      setCourseList(result);
-      console.log(result);
+      const normalizedResult = result.map(course => normalizeCourse(course));
+      setCourseList(normalizedResult);
+      console.log(normalizedResult);
     } catch (error) {
       console.error("Error fetching all courses:", error);
     } finally {
@@ -44,7 +47,7 @@ function Explore() {
           [1, 2, 3, 4, 5, 6].map((item, index) => (
             <div 
               key={index} 
-              className='h-[250px] bg-slate-200 animate-pulse rounded-lg'
+              className='h-[250px] bg-slate-200 dark:bg-slate-800 animate-pulse rounded-lg'
             />
           ))
         ) : (
@@ -64,9 +67,9 @@ function Explore() {
       )}
       <div className='flex justify-between mt-5'>
 
-      {pageIndex != 0 && <Button onClick={() => setPageIndex(pageIndex - 1)}>Previous Page</Button>}
+      {pageIndex != 0 && <Button className="bg-blue-500 hover:bg-blue-600" onClick={() => setPageIndex(pageIndex - 1)}>Previous Page</Button>}
 
-      <Button onClick={()=>setPageIndex(pageIndex+1)}>Next Page</Button>
+      <Button className="bg-blue-500 hover:bg-blue-600" onClick={()=>setPageIndex(pageIndex+1)}>Next Page</Button>
 
       </div>
     </div>

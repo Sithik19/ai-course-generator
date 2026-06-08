@@ -11,7 +11,8 @@ export const CourseList=pgTable('courseList',{
     courseOutput:json('courseOutput').notNull(),
     createdBy:varchar('createdBy').notNull(),
     userName:varchar('username'),
-    userProfileImage:varchar('userProfileImage')
+    userProfileImage:varchar('userProfileImage'),
+    language:varchar('language').notNull().default('English')
 
 });
 
@@ -21,5 +22,15 @@ export const Chapters=pgTable('chapters', {
     chapterId:integer('chapterId').notNull(),
     content:json('content').notNull(),
     videoId: varchar('videoId').notNull()
+})
+
+export const Subscriptions=pgTable('subscriptions', {
+    id:serial('id').primaryKey(),
+    email:varchar('email').notNull(),
+    utr:varchar('utr').notNull().unique(),
+    amount:varchar('amount').notNull(),
+    plan:varchar('plan').notNull(),
+    status:varchar('status').notNull().default('pending'), // 'pending', 'approved', 'rejected'
+    createdAt:varchar('createdAt').notNull()
 })
 

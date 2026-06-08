@@ -21,8 +21,8 @@ function SelectCategory() {
       <div className="grid grid-cols-3 gap-10">
         {CategoryList.map((item, index) => (
           <div key={item.id }
-            className={`flex flex-col p-5 border items-center rounded-xl hover:border-blue-600 hover:bg-blue-100 cursor-pointer
-              ${userCourseInput?.category==item.name && 'border-blue-600 bg-blue-50'}`}
+            className={`flex flex-col p-5 border border-gray-200 dark:border-slate-800 items-center rounded-xl hover:border-blue-600 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-slate-800/60 cursor-pointer
+              ${userCourseInput?.category==item.name && 'border-blue-600 dark:border-blue-500 bg-blue-50 dark:bg-blue-950/40'}`}
             onClick={() => handleCategoryChange(item.name)}
           >
             <Image src={item.icon} width={50} height={50} alt="image"/>

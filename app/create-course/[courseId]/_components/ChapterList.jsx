@@ -8,12 +8,12 @@ function ChapterList({course,refreshData,edit=true}) {
       <h2 className='font-medium text-xl'>Chapters</h2>
       <div className='mt-2'>
         {course?.courseOutput?.chapters?.map((chapter,index)=>(
-            <div key={chapter.id || index}className='border p-5 rounded-lg mb-2 flex items-center justify-between' >
+            <div key={chapter.id || index} className='border border-gray-200 dark:border-slate-800 p-5 rounded-lg mb-2 flex items-center justify-between bg-white dark:bg-slate-900' >
             <div className='flex gap-5 items-center'>
                 <h2 className='bg-blue-500 h-10 w-10 text-white rounded-full text-center p-2 flex-none'>{index+1}</h2>
                 <div>
                     <h2 className='font-medium text-lg'>{chapter?.chapter_name} {edit && <EditChapters course={course} index={index} refreshData={refreshData} />}</h2>
-                    <p className='text-sm text-gray-500'>{chapter?.about}</p>
+                    <p className='text-sm text-gray-500 dark:text-slate-400'>{chapter?.about}</p>
                     <p className='flex gap-2 text-blue-500 items-center'><FaClockRotateLeft/>{chapter?.duration}</p>
                 </div>
             </div>

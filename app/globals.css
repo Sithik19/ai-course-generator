@@ -120,3 +120,11 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Custom rule to support dark mode logo inversion */
+.logo-filter {
+  transition: filter 0.2s ease;
+}
+.dark .logo-filter {
+  filter: invert(1) hue-rotate(180deg) !important;
+}

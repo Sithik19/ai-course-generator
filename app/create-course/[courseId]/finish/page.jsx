@@ -9,6 +9,8 @@ import CourseBasicInfo from '../_components/CourseBasicInfo';
 import { CourseList } from '@/configs/schema';
 import { FaCopy } from "react-icons/fa6";
 
+import { normalizeCourse } from '@/configs/dbNormalize';
+
 function FinishScreen() {
   const { user } = useUser();
   const params = useParams();
@@ -35,8 +37,8 @@ function FinishScreen() {
         )
       );
 
-    setCourse(result[0]);
-    console.log(result[0]);
+    setCourse(normalizeCourse(result[0]));
+    console.log(normalizeCourse(result[0]));
   };
 
   return (
@@ -44,9 +46,17 @@ function FinishScreen() {
       <h2 className='text-center font-bold text-2xl my-3 text-blue-500'>Course Created Successfully!</h2>
       <CourseBasicInfo course={course} refreshData={() => getCourse()} />
         <h2 className='mt-3'>Course URL:</h2>
-        <h2 className='text-center text-gray-400 border p-2 round flex gap-5 items-center'>{process.env.NEXT_PUBLIC_HOST_NAME}/course/view/{course?.courseId}
+        <h2 className='text-center text-gray-400 border border-gray-200 dark:border-slate-800 p-2 rounded-lg bg-white dark:bg-slate-900 flex gap-5 items-center'>
+          <a 
+            href={process.env.NEXT_PUBLIC_HOST_NAME + "/course/" + course?.courseId} 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="text-blue-500 hover:underline cursor-pointer flex-1 text-left"
+          >
+            {process.env.NEXT_PUBLIC_HOST_NAME}/course/{course?.courseId}
+          </a>
           <FaCopy className='h-5 w-5 text-blue-500 cursor-pointer'
-          onClick={async() => navigator.clipboard.writeText(process.env.NEXT_PUBLIC_HOST_NAME+"/course/view/"+course?.courseId)}/>
+          onClick={async() => navigator.clipboard.writeText(process.env.NEXT_PUBLIC_HOST_NAME+"/course/"+course?.courseId)}/>
         </h2>
     </div>
   );

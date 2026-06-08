@@ -26,7 +26,7 @@ function ChapterContent({chapter,content}) {
 <div>
   {Array.isArray(content?.content.chapters) &&
     content.content.chapters.map((item, index) => (
-      <div key={index} className='p-5 bg-sky-50 mb-3 rounded-lg'>
+      <div key={index} className='p-5 bg-sky-50 dark:bg-slate-900 border border-transparent dark:border-slate-800 mb-3 rounded-lg'>
         <h2 className="font-medium text-lg">
           {item.title}
         </h2>

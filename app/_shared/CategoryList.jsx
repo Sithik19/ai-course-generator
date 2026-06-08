@@ -7,8 +7,8 @@ export default[
 },
 {
     id:2,
-    name:'Health',
-    icon:'/health.svg',
+    name:'Education',
+    icon:'/education.svg',
     prompt:''
 },
 {

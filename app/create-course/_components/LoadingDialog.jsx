@@ -17,11 +17,11 @@ function LoadingDialog({loading}) {
       <AlertDialog open={loading} >
   <AlertDialogContent>
     <AlertDialogHeader>
-     
-      <AlertDialogDescription>
+      <AlertDialogTitle className="sr-only">Generating Course Layout</AlertDialogTitle>
+      <AlertDialogDescription asChild>
         <div className='flex flex-col items-center py-10'>
-        <Image src="/loader.gif" width={100} height={100} alt="loading..." className='mx-auto'/>
-        <h2>Please wait... AI is generating your course</h2>
+          <Image src="/loader.gif" width={100} height={100} alt="loading..." className='mx-auto'/>
+          <p className="text-gray-900 dark:text-white font-medium text-lg mt-4 text-center">Please wait... AI is generating your course</p>
         </div>
       </AlertDialogDescription>
     </AlertDialogHeader>

@@ -1,16 +1,12 @@
 "use client"
-import React from 'react'
+import React, { useContext, useEffect } from 'react'
 import { Input } from "@/components/ui/input"
-import { useContext } from "react";
 import { UserInputContext } from "@/app/_context/UserInputContext";
-
 
 import {
     Select,
     SelectContent,
-    SelectGroup,
     SelectItem,
-    SelectLabel,
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
@@ -20,11 +16,17 @@ function SelectOption() {
     const { userCourseInput, setUserCourseInput } = useContext(UserInputContext);
     
     const handleInputChange = (fieldName,value) => {
-    setUserCourseInput(prev => ({
-      ...prev,
-      [fieldName]: value
-    }))
-  }
+        setUserCourseInput(prev => ({
+          ...prev,
+          [fieldName]: value
+        }))
+    }
+
+    useEffect(() => {
+        if (!userCourseInput?.language) {
+            handleInputChange('language', 'English');
+        }
+    }, [])
 
     return (
         <div className='px-10 md:px-20 lg:px-44'>
@@ -74,13 +76,34 @@ function SelectOption() {
                 </div>
 
                 <div>
-                    <label className='text-sm'>Number of Chapters</label>
-                    <Input type="number" className=""
-                    defaultValue={userCourseInput?.noOfChapter}
-                     onChange={(event)=>handleInputChange('noOfChapter',event.target.value)}/>
+                    <label className='text-sm'>Language</label>
+                    <Select onValueChange={(value)=>handleInputChange('language',value)}
+                        defaultValue={userCourseInput?.language || 'English'}>
+                        <SelectTrigger className="h-14 w-full text-lg">
+                            <SelectValue placeholder="Select Language" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="English">English</SelectItem>
+                            <SelectItem value="Tamil">Tamil</SelectItem>
+                            <SelectItem value="Hindi">Hindi</SelectItem>
+                            <SelectItem value="Telugu">Telugu</SelectItem>
+                            <SelectItem value="Kannada">Kannada</SelectItem>
+                            <SelectItem value="Malayalam">Malayalam</SelectItem>
+                            <SelectItem value="German">German</SelectItem>
+                            <SelectItem value="French">French</SelectItem>
+                            <SelectItem value="Spanish">Spanish</SelectItem>
+                        </SelectContent>
+                    </Select>
                 </div>
 
-                
+                <div className='col-span-2 flex justify-center'>
+                    <div className='w-[calc(50%-1.25rem)]'>
+                        <label className='text-sm'>Number of Chapters</label>
+                        <Input type="number" className="h-14 w-full text-lg"
+                        defaultValue={userCourseInput?.noOfChapter}
+                        onChange={(event)=>handleInputChange('noOfChapter',event.target.value)}/>
+                    </div>
+                </div>
             </div>
         </div>
     )
