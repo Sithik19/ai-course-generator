@@ -66,8 +66,8 @@ function CourseBasicInfo({course,refreshData,edit=true}) {
   };
 
   return (
-    <div className='p-10 border border-gray-100 dark:border-slate-800 rounded-xl shadow-sm mt-5 bg-white dark:bg-slate-900'>
-        <div className='grid grid-cols-1 md:grid-cols-2 gap-8 items-center'>
+    <div className='p-5 md:p-10 border border-gray-100 dark:border-slate-800 rounded-xl shadow-sm mt-5 bg-white dark:bg-slate-900'>
+        <div className='grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 items-center'>
             <div className='flex flex-col gap-3'>
                 <h2 className='font-bold text-3xl text-gray-900 dark:text-white flex items-center gap-2'>
                   {course?.courseOutput?.course_name}
