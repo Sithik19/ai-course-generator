@@ -6,7 +6,7 @@ import { eq, and } from 'drizzle-orm';
 import ChapterListCard from './_components/ChapterListCard';
 import ChapterContent from './_components/ChapterContent';
 
-import { normalizeCourse } from '@/configs/dbNormalize';
+import { normalizeCourse, normalizeChapter } from '@/configs/dbNormalize';
 
 function CourseStart({ params }) {
   const resolvedParams = use(params);
@@ -46,7 +46,7 @@ function CourseStart({ params }) {
         eq(Chapters.courseId, courseId) 
       ));
     
-    setChapterContent(result[0]);
+    setChapterContent(normalizeChapter(result[0]));
   };
 
   return (

@@ -113,7 +113,7 @@ function CourseLayout() {
         
         const promises = chunk.map(async (chapter, chunkIndex) => {
           const index = i + chunkIndex;
-          const PROMPT = 'Explain the concept in Detail on Topic: ' + course?.name + ', Chapter: ' + chapter?.chapter_name + ', in JSON Format with list of array with field as title, description in detail, Code Example(Code field in <precode > format) if applicable. The entire response (title, description, etc.) must be written in ' + language + ' language.';
+          const PROMPT = 'Explain the concept in Detail on Topic: ' + course?.name + ', Chapter: ' + chapter?.chapter_name + ', in JSON Format: an object containing a "chapters" array where each element has: "title" (string), "description" (string, in markdown format), and "codeExample" (string, code wrapped in <precode> format) if applicable. The entire response (title, description, etc.) must be written in ' + language + ' language.';
           console.log(PROMPT);
 
           let videoId = '';

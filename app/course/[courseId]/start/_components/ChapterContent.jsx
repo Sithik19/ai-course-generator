@@ -30,25 +30,34 @@ function ChapterContent({chapter,content}) {
       </div>
 
       {/* Content */}
-<div>
-  {Array.isArray(content?.content.chapters) &&
-    content.content.chapters.map((item, index) => (
-      <div key={index} className='p-5 bg-sky-50 dark:bg-slate-900 border border-transparent dark:border-slate-800 mb-3 rounded-lg'>
-        <h2 className="font-medium text-lg">
-          {item.title}
-        </h2>
-        {/* <p className='whitespace-pre-wrap'>{item.description}</p>*/}
-        <ReactMarkdown>{item?.description}</ReactMarkdown>
-        {item.codeExample &&<div className='p-4 bg-black text-white rounded-md mt-3'>
-        <pre>
-          <code><ReactMarkdown>{item.codeExample}</ReactMarkdown></code>
-        </pre>
-        </div>
-        } 
+      <div>
+        {Array.isArray(content?.content?.chapters) &&
+          content.content.chapters.map((item, index) => {
+            const codeContent = item.codeExample || '';
+            const cleanCode = typeof codeContent === 'string'
+              ? codeContent.replace(/<\/?precode>/gi, '').trim()
+              : JSON.stringify(codeContent, null, 2);
+            
+            return (
+              <div key={index} className='p-5 bg-sky-50 dark:bg-slate-900 border border-transparent dark:border-slate-800 mb-3 rounded-lg'>
+                <h2 className="font-medium text-lg mb-2">
+                  {item.title}
+                </h2>
+                <div className="prose dark:prose-invert max-w-none text-slate-700 dark:text-slate-300">
+                  <ReactMarkdown>{item?.description || ''}</ReactMarkdown>
+                </div>
+                {cleanCode && (
+                  <div className='p-4 bg-black text-white rounded-md mt-3 overflow-x-auto font-mono text-sm'>
+                    <pre>
+                      <code>{cleanCode}</code>
+                    </pre>
+                  </div>
+                )} 
+              </div>
+            );
+          })
+        }
       </div>
-    ))
-  }
-</div>
       
     </div>
   )
