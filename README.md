@@ -1,3 +1,4 @@
+```markdown
 # 🎓 AI Course Generator
 
 An intelligent SaaS-based learning platform that automatically generates complete, custom educational courses using Generative AI. Designed as a college final-year capstone project, this platform creates structured curricula, detailed chapter content, programming examples, and curated video resources, enabling users to learn any topic through a personalized learning experience.
@@ -298,3 +299,4 @@ The **AI Course Generator** demonstrates how combining generative artificial int
 This project is intended for educational, research, and portfolio purposes.
 
 © 2026 AI Course Generator. All Rights Reserved.
+```
