@@ -110,6 +110,14 @@ useEffect(()=>{
   const GenerateCourseLayout=async()=>{
     setLoading(true)
     try {
+      // Validate environment variables
+      if (!process.env.NEXT_PUBLIC_GEMINI_API_KEY) {
+        throw new Error("Missing Gemini API Key (NEXT_PUBLIC_GEMINI_API_KEY). Please check your deployment settings on Vercel.");
+      }
+      if (!process.env.NEXT_PUBLIC_DB_CONNECTION_STRING) {
+        throw new Error("Missing Database Connection String (NEXT_PUBLIC_DB_CONNECTION_STRING).");
+      }
+
       const BASIC_PROMPT='Generate A Course Tutorial on Following Detail With field Course Name, Description,Along with Chapter Name, about, Duration:.'
       const USER_INPUT_PROMPT='Category:'+userCourseInput?.category+',Topic:'+userCourseInput?.topic+',Level:'+userCourseInput?.level+',Duration:'+userCourseInput?.duration+',NoOfChapters:'+userCourseInput?.noOfChapter+',Language:'+userCourseInput?.language+' , in JSON format.'
       const FINAL_PROMPT=BASIC_PROMPT+USER_INPUT_PROMPT+' All output fields (specifically Course Name, Description, Chapter Name, and about) must be written in '+userCourseInput?.language+' language.';
@@ -123,6 +131,7 @@ useEffect(()=>{
       await SaveCourseLayoutInDb(parsedLayout);
     } catch (error) {
       console.error("Error generating course layout:", error);
+      alert("Error generating course layout: " + error.message);
       setLoading(false);
     }
   }

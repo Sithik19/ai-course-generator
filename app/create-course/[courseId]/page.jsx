@@ -89,7 +89,19 @@ function CourseLayout() {
   const GenerateChapterContent=async ()=>{
     setLoading(true);
     try {
+      // Validate environment variables
+      if (!process.env.NEXT_PUBLIC_GEMINI_API_KEY) {
+        throw new Error("Missing Gemini API Key (NEXT_PUBLIC_GEMINI_API_KEY). Please check your deployment settings on Vercel.");
+      }
+      if (!process.env.NEXT_PUBLIC_DB_CONNECTION_STRING) {
+        throw new Error("Missing Database Connection String (NEXT_PUBLIC_DB_CONNECTION_STRING).");
+      }
+
       const chapters=course?.courseOutput?.chapters;
+      if (!chapters || chapters.length === 0) {
+        throw new Error("No chapters found in the course layout to generate content for. Please reload the course layout.");
+      }
+
       const language=course?.courseOutput?.language || 'English';
       
       // Clear any existing chapters for this course ID first to avoid duplicate entries
@@ -106,10 +118,14 @@ function CourseLayout() {
 
           let videoId = '';
           try {
-            // Generate Video URL 
-            const searchQuery = course?.name + ': ' + chapter?.chapter_name + ' in ' + language;
-            const resp = await ServiceWorker.getVideos(searchQuery);
-            videoId = resp[0]?.id?.videoId || '';
+            // Generate Video URL (only if API Key is configured)
+            if (process.env.NEXT_PUBLIC_YOUTUBE_API_KEY) {
+              const searchQuery = course?.name + ': ' + chapter?.chapter_name + ' in ' + language;
+              const resp = await ServiceWorker.getVideos(searchQuery);
+              videoId = resp[0]?.id?.videoId || '';
+            } else {
+              console.warn("YouTube API Key is missing. Skipping video fetch.");
+            }
           } catch (videoErr) {
             console.error("Error fetching video for chapter:", videoErr);
           }
@@ -134,6 +150,7 @@ function CourseLayout() {
       router.replace('/create-course/' + course?.courseId + '/finish');
     } catch (e) {
       console.error("Error generating chapter content:", e);
+      alert("Error generating chapter content: " + e.message);
     } finally {
       setLoading(false);
     }
