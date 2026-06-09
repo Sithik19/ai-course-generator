@@ -97,41 +97,6 @@ graph TD
     Clerk -->|13. Updates User Account Meta| Postgres
 ```
 
-### 2. Sequence Workflow: Course Outline & Chapter Content Generation
-This step-by-step transaction model maps the detailed chronological workflow when a user triggers course outline generation followed by full chapter media-content generation:
-
-```mermaid
-sequenceDiagram
-    autonumber
-    actor User
-    participant Frontend as Next.js 16 / React 19 Client
-    participant Auth as Clerk Service
-    participant Gemini as Google Gemini API
-    participant DB as Neon PostgreSQL (Drizzle)
-    participant YouTube as YouTube Data API v3
-
-    User->>Frontend: Provide Course parameters (Category, Topic, Level, Language)
-    Frontend->>Auth: Validate auth session & user premium status (isMember)
-    Auth-->>Frontend: Session validated (Active profile)
-    Frontend->>Gemini: Request course outline syllabus JSON (CourseList schema structure)
-    Gemini-->>Frontend: Return structured syllabus array
-    Frontend->>DB: Save Course Outline row to CourseList table
-    Frontend->>User: Render Syllabus preview cards
-
-    User->>Frontend: Click "Generate Detailed Chapter Content"
-    Frontend->>User: Display Loading Overlay with active step counter
-    
-    loop Process Chapters in Chunks (concurrencyLimit = 3)
-        Frontend->>Gemini: Ask for subchapter text, code examples & explanations
-        Gemini-->>Frontend: Return chapter detail nodes (JSON object/array)
-        Frontend->>YouTube: Query relevant educational videos (Query: Topic + Chapter Name)
-        YouTube-->>Frontend: Return list of matching videoIds
-        Frontend->>DB: Normalize & Insert row into Chapters table (content, videoId, chapterId)
-    end
-
-    Frontend->>User: Redirect to interactive Viewer screen (/course/[courseId]/start)
-```
-
 ---
 
 ## ⚙️ Core Modules
