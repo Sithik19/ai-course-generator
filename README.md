@@ -8,39 +8,46 @@ An intelligent SaaS-based learning platform that automatically generates complet
 
 ---
 
-# 📖 Overview
+## 📖 About the Project
 
-AI Course Generator is a full-stack AI-powered learning platform that allows users to generate complete, personalized courses in seconds. 
+**AI Course Generator** is a full-stack, AI-powered educational platform that allows users to generate complete, personalized courses in seconds. By combining advanced Large Language Models (LLMs) with automated web search pipelines, the application instantly drafts structured course outlines, compiles comprehensive sub-chapters with text explanations and code snippets, and matches them with high-quality, relevant educational videos. 
 
-The platform combines the power of **Google Gemini AI**, **YouTube Data API**, **Next.js 16**, **Neon PostgreSQL**, and **Clerk Authentication** to provide an end-to-end automated learning solution.
+The application is built using a modern stack featuring **Next.js 16**, **React 19**, **Google Gemini AI**, **Neon serverless PostgreSQL**, **Drizzle ORM**, **Clerk Authentication**, and **Tailwind CSS v4**.
+
+---
+
+## 🎯 Purpose
+
+The primary purpose of the AI Course Generator is to democratize education by offering **personalized, on-demand, and multi-lingual learning path construction**. Instead of forcing learners to browse multiple generic, unorganized educational sources or follow fixed, pre-recorded modules that might be too slow or too fast, this platform serves as an instant personal tutor. It instantly extracts, structures, and presents educational material optimized for a student's chosen topic, knowledge level, and native language.
 
 ---
 
 ## 📝 Problem Statement
 
-Traditional online education systems (Massive Open Online Courses - MOOCs) suffer from several systemic limitations:
-1.  **Rigid Curriculum**: Existing platforms offer static, pre-recorded course outlines that fail to adjust to an individual student’s unique knowledge level or learning speed.
-2.  **High Creation Overhead**: Designing complete course syllabi, compiling detailed topic lecture summaries, and sourcing relevant visual guides manually requires significant subject-matter expert hours.
-3.  **Monolingual Bias**: High-quality educational content is predominantly authored in English, creating accessibility barriers for regional-language learners.
-4.  **Inefficient Resource Synthesis**: Students often waste hours switching between search engines, textual blogs, and YouTube video lists to study a single topic in detail.
-5.  **Payment Processing Barriers**: Small-scale educational creators face steep subscription fee cuts from payment gateways. They lack simple, self-governed manual bank verification systems (like direct UPI/UTR validation) that allow low-overhead transaction checking.
+Traditional online education systems (such as Massive Open Online Courses / MOOCs) suffer from several systemic limitations:
+1. **Rigid & Non-Adaptive Curricula**: Existing courses offer static, pre-recorded structures. They fail to adapt to an individual student's specific knowledge gaps, interests, or pacing requirements.
+2. **High Course Creation Overhead**: Creating a complete course layout, compiling explanations, writing source code examples, and recording corresponding video lectures takes subject-matter experts hundreds of hours.
+3. **Monolingual Bias**: High-quality tech-related educational content is predominantly created in English, leaving regional or native-language learners with limited or low-quality materials.
+4. **Information Sifting Fatigue**: Students lose hours switching back and forth between search engines, textual blogs, documentation, and random YouTube playlists to study a single topic in detail.
+5. **Subscription & Transaction Overhead**: Creators and small-scale educational teams suffer high transaction commissions from major card payment gateways and lack support for direct, zero-fee peer-to-peer bank transfers (like UPI references) backed by a secure verification system.
 
 ---
 
-## 💡 Proposed System
+## 💡 Solution (Proposed System)
 
-The proposed **AI Course Generator** resolves these bottlenecks by introducing an on-demand, interactive learning ecosystem. 
+The **AI Course Generator** addresses these challenges through a unified, automated, and robust learning portal:
 
-*   **Dynamic Syllabus Construction**: Users specify a subject category, a refined topic focus, difficulty level (Beginner/Intermediate/Advanced), target duration, and preferred language. The system then invokes the Gemini AI model to design a comprehensive modular course layout in real-time.
-*   **Automated Multi-Modal Compilation**: Instead of static files, the app starts parallel workers to compile chapter summaries, markdown textual assets, and code samples, alongside real-time video lectures fetched from the Google YouTube Search API.
-*   **Self-Custodial payment clearance**: A hybrid billing dashboard implements automated card gateways alongside a manual UPI transaction reference (UTR) verification pipeline.
-*   **Admin Audit Console**: Includes a secure administration review page allowing platform controllers to clear pending UPI transaction reference codes and instantly toggle premium access permissions on Clerk user accounts.
+* **Real-time Syllabus Generation**: Harnesses Google's Gemini AI to instantly create hierarchical modular course structures based on user inputs (Category, Topic, Level, Duration, and Language).
+* **Multi-Modal Synchronization**: Automatically matches and embeds corresponding, high-quality, and duration-filtered video lessons for every generated chapter using the Google YouTube Data API v3.
+* **Fault-Tolerant AI Parser (Robust Normalization)**: Utilizes a custom, client-side normalization pipeline (`configs/dbNormalize.js`) that handles inconsistencies in the AI model's JSON outputs. It dynamically parses raw arrays, case-insensitive properties, and localized keys (e.g. Tamil or Hindi terms like `அத்தியாயங்கள்` or `பிரிவுகள்`) to guarantee smooth rendering without breaking the UI.
+* **Flexible Dual-Route Payment Gateway**: Features card processing checkouts (Razorpay and Stripe simulator) alongside a commission-free **Manual UPI Reference (UTR) Submission Portal** displaying dynamic checkout QR codes.
+* **Administrative Audit Dashboard**: A secure, admin-only panel to review manual bank transfer reference (UTR) codes, verify payments, and instantly toggle premium Clerk memberships with a single click.
 
 ---
 
 ## 📐 System Architecture
 
-The following diagram illustrates the flow of data across the client interface, authentication boundaries, AI generation engines, external APIs, and the serverless relational database:
+The client application, serverless DB, and external AI models interact as shown in the data-flow diagram below:
 
 ```mermaid
 graph TD
@@ -61,7 +68,7 @@ graph TD
     end
 
     subgraph Artificial Intelligence & Search APIs
-        Gemini[Google Gemini API / gemini-flash-lite]
+        Gemini[Google Gemini API]
         YouTube[Google YouTube v3 Search API]
     end
 
@@ -88,53 +95,39 @@ graph TD
 
 ---
 
-## ⚙️ Modules
+## ⚙️ Core Modules
 
-The system is decomposed into six cohesive core modules:
-
-1.  **User Input & Form Orchestrator**: A three-step user wizard (`SelectCategory`, `TopicDescription`, `SelectOption`) that collects course parameters and performs input validation.
-2.  **AI Syllabus Synthesis Engine**: Calls the Gemini API to retrieve structured JSON templates representing the course syllabus layout. It features a rate-limit/retry strategy (`sendMessageWithRetry`) to handle transient endpoint overloads.
-3.  **Multimodal Media Sync Engine**: Interacts with the YouTube v3 API via Axios. It searches for relevant instructional videos based on the course name and chapter title, selecting embeddable, medium-duration educational videos.
-4.  **Security & Identity Boundary (Clerk)**: Secures routes via JWT middleware verification. It segments user dashboards and stores subscription access metadata (`isMember`) inside Clerk's user metadata properties.
-5.  **Multi-Channel Payment Gateway**: Manages credit card simulators (via Stripe UI), online checkout APIs (via Razorpay SDK), and manual peer-to-peer UPI transfers via dynamic QR-code rendering.
-6.  **Administrative Approval Module**: An admin-only interface designed to match submitted UPI UTR numbers with bank receipts. It updates database states and flags Clerk metadata profiles.
-
----
-
-## 🌟 Advantages
-
-*   **Tailored Microlearning**: Students get curriculum content customized to their specific topic choices and background knowledge.
-*   **Low Operational Costs**: Sourcing course content dynamically on demand removes the cost of hosting thousands of hours of video files.
-*   **Zero-Overhead Payments**: Enables manual UPI transaction approvals, meaning creators can process payments without paying gateway commissions.
-*   **Improved Accessibility**: Support for localized course generation helps non-English-speaking students learn technical subjects.
+1. **User Input & Validation Wizard**: A step-by-step options collection container (`SelectCategory`, `TopicDescription`, `SelectOption`) that collects preferences for course generation.
+2. **AI Content Synthesis Engine**: Moves requests to Gemini AI via a resilient rate-limiting query orchestrator (`sendMessageWithRetry`) to draft detailed lesson plans.
+3. **YouTube Resource Matcher**: An automated worker that constructs precise search phrases and retrieves matching embeddable instructional video keys.
+4. **Data Normalization Layer**: Formats dynamic, unstructured AI responses into standard schema objects before database insertion and rendering.
+5. **Subscription & Payment Controllers**: Controls free usage limits, premium plans, and handles credit card simulation and manual peer-to-peer payment submissions.
+6. **Admin Review Interface**: A secured management console where platform administrators audit transaction receipts and toggle user memberships.
 
 ---
 
 ## 🚀 Key Features
 
-*   **✨ AI Course Outline generation**: Utilizes Gemini AI (`gemini-flash-lite-latest`) to output structured JSON course outlines containing descriptions, levels, estimated chapter durations, and detailed modules.
-*   **📖 Detailed Chapter Content**: Generates full lesson plans per chapter with detailed explanations, markdown-rendered headings, and syntax-highlighted code block examples formatted as `<precode>`.
-*   **📺 Educational Video Sync**: Automatically queries and fetches the most relevant and embeddable YouTube video for each chapter using the Google YouTube Data API v3.
-*   **🌐 Multi-Lingual Generation**: Create courses in English, Hindi, French, Spanish, or any preferred language chosen during setup.
-*   **🔒 Secure User Auth & Protected Routes**: Fully integrated with Clerk authentication and routing middleware for securing personal dashboards and courses.
-*   **💳 Subscription & Premium Tier**:
-    *   *Free Tier*: Limit of up to 5 created courses.
-    *   *Premium Tier*: Unlimited course generation, stateless rendering, and advanced topic configurations.
-    *   *Flexible Payments*: Multi-method billing dialog supporting India-focused **Razorpay Gateway**, simulated **Stripe Checkout**, and **Manual UPI Transfer** (with QR-code scanning).
-*   **🛡️ Administrative Approval Dashboard**: Secure panel restricted to specific admin emails to verify manual UPI payment submissions by UTR (Unique Transaction Reference) codes, allowing instant approval or rejection of premium access.
+* **✨ Dynamic AI Syllabus Generation**: Generates comprehensive course structures detailing categories, difficulty levels, target durations, and sub-chapters.
+* **📖 Full Markdown Lesson Explanations**: Dynamically renders detailed sub-chapters featuring headings, code snippet containers, and comprehensive explanations.
+* **📺 Curated Video Integrations**: Automatically pairs each generated chapter with relevant YouTube video resources.
+* **🌐 Multilingual Generation Support**: Instantly translates and constructs courses in multiple languages including English, Tamil, Hindi, Spanish, and French.
+* **🔒 Secure Authentication Boundary**: Routes protected by Clerk JWT middleware, separating standard dashboards from administrator consoles.
+* **💳 P2P Payments & Admin Verification**: Support for direct UPI payments using dynamically generated QR codes with an administrative verification panel to manually clear UTR codes.
+* **🌓 Dark & Light Modes**: Seamless visual system supporting dynamic dark and light mode themes.
 
 ---
 
 ## 🛠️ Tech Stack
 
-*   **Frontend**: Next.js 16 (React 19, App Router)
-*   **Styling**: Tailwind CSS v4, Lucide React, React Icons, Radix UI Primitives (Shadcn UI templates)
-*   **Database**: Serverless PostgreSQL hosted on [Neon](https://neon.tech/)
-*   **ORM**: [Drizzle ORM](https://orm.drizzle.team/) & Drizzle Kit for schema migrations
-*   **Authentication**: [Clerk Next.js SDK](https://clerk.com/)
-*   **AI SDK**: Google Gemini 2.5 Flash (`@google/generative-ai`)
-*   **Media APIs**: Google YouTube Data API v3 & Cloudinary for custom asset management
-*   **Markdown Rendering**: `react-markdown`
+* **Frontend**: Next.js 16 (App Router, React 19)
+* **Styling**: Tailwind CSS v4, Radix UI Primitives, Lucide React Icons
+* **Database**: Serverless PostgreSQL (hosted on [Neon.tech](https://neon.tech/))
+* **ORM**: [Drizzle ORM](https://orm.drizzle.team/)
+* **Authentication**: [Clerk Next.js SDK](https://clerk.com/)
+* **AI Model**: Google Gemini API (`@google/generative-ai`)
+* **Media API**: Google YouTube Data API v3
+* **Markdown Rendering**: `react-markdown`
 
 ---
 
@@ -171,55 +164,49 @@ The system is decomposed into six cohesive core modules:
 ├── drizzle.config.js           # Drizzle migration and database push options
 ├── middleware.js               # Route protection middleware powered by Clerk
 ├── package.json                # Project dependencies and script runner configurations
-└── check_db.js                 # Utility script to inspect courses & chapters table entries
+└── check_db.js                 # Utility script to inspect database entries
 ```
 
 ---
 
 ## 🗄️ Database Schema (`configs/schema.jsx`)
 
-The PostgreSQL database is organized into three tables defined via Drizzle:
+The database consists of three PostgreSQL tables orchestrated via Drizzle ORM:
 
-### 1. CourseList
-Stores generated course metadata and curriculum structure.
+### 1. `CourseList` (Main Course Metadata)
+| Column | Type | Description |
+|---|---|---|
+| `id` | Serial (PK) | Primary auto-incrementing key |
+| `courseId` | Varchar | Unique course UUID |
+| `name` | Varchar | Course name/topic |
+| `category` | Varchar | Category (Programming, Health, etc.) |
+| `level` | Varchar | Difficulty (Beginner, Intermediate, Advanced) |
+| `includeVideo`| Varchar | Toggle to include video |
+| `courseOutput`| JSON | Structured syllabus layout |
+| `createdBy` | Varchar | Creator's email address |
+| `userName` | Varchar | Creator's display name |
+| `userProfileImage`| Varchar | Creator's Clerk avatar |
+| `language` | Varchar | Target language for the course |
 
-| Column | Type |
-|----------|---------|
-| id | Serial (PK) |
-| courseId | Varchar |
-| name | Varchar |
-| category | Varchar |
-| level | Varchar |
-| includeVideo | Varchar |
-| courseOutput | JSON |
-| createdBy | Varchar |
-| username | Varchar |
-| userProfileImage | Varchar |
-| language | Varchar |
+### 2. `Chapters` (Detailed Sub-chapter Lessons)
+| Column | Type | Description |
+|---|---|---|
+| `id` | Serial (PK) | Primary auto-incrementing key |
+| `courseId` | Varchar | Associated course UUID |
+| `chapterId` | Integer | Chapter index (0-indexed integer) |
+| `content` | JSON | AI-generated sub-chapters text & code blocks |
+| `videoId` | Varchar | Sourced YouTube video key |
 
-### 2. Chapters
-Stores detailed AI-generated chapter content and associated YouTube videos.
-
-| Column | Type |
-|----------|---------|
-| id | Serial (PK) |
-| courseId | Varchar |
-| chapterId | Integer |
-| content | JSON |
-| videoId | Varchar |
-
-### 3. Subscriptions
-Stores subscription requests and payment verification details.
-
-| Column | Type |
-|----------|---------|
-| id | Serial (PK) |
-| email | Varchar |
-| utr | Varchar |
-| amount | Varchar |
-| plan | Varchar |
-| status | Varchar |
-| createdAt | Varchar |
+### 3. `Subscriptions` (P2P Transactions Review)
+| Column | Type | Description |
+|---|---|---|
+| `id` | Serial (PK) | Primary auto-incrementing key |
+| `email` | Varchar | Submitting user's email address |
+| `utr` | Varchar | Unique 12-digit transaction reference number |
+| `amount` | Varchar | Amount transferred |
+| `plan` | Varchar | Selected membership plan tier |
+| `status` | Varchar | Review status (`pending`, `approved`, `rejected`) |
+| `createdAt` | Varchar | Timestamp |
 
 ---
 
@@ -234,7 +221,7 @@ CLERK_SECRET_KEY=your_clerk_secret_key
 NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
 NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
 
-# Database Connection (Neon Serverless URL)
+# Database Connection (Neon Serverless PostgreSQL)
 NEXT_PUBLIC_DB_CONNECTION_STRING=postgresql://<user>:<password>@<neon-host>/ai-course-generator?sslmode=require
 
 # Google Gemini AI Key
@@ -243,7 +230,7 @@ NEXT_PUBLIC_GEMINI_API_KEY=your_gemini_api_key
 # Google YouTube v3 Data API Key
 NEXT_PUBLIC_YOUTUBE_API_KEY=your_youtube_api_key
 
-# Payment Gateways (Optional / Dev Sandbox keys)
+# Payment Gateways (Optional Sandbox keys)
 NEXT_PUBLIC_RAZORPAY_KEY_ID=your_razorpay_key_id
 RAZORPAY_KEY_SECRET=your_razorpay_secret
 
@@ -262,7 +249,7 @@ Follow these steps to run the application locally:
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/your-username/ai-course-generator.git
+git clone https://github.com/Sithik19/ai-course-generator.git
 cd ai-course-generator
 ```
 
@@ -292,40 +279,6 @@ Open [http://localhost:3000](http://localhost:3000) in your browser to view the 
 
 ---
 
-## 🛡️ Administrative Approvals Workflow
-
-For manual UPI transfers, users submit their 12-digit transaction **UTR Number** via the checkout dialog. 
-
-1.  A pending subscription record is saved to the database.
-2.  Any user logged in with a designated admin email (configured in `ADMIN_EMAILS` inside `SideBar.jsx` and `admin/page.jsx`) will see the **Admin Panel** option in their sidebar.
-3.  The admin matches the submitted UTR number with their bank account statement.
-4.  Clicking **Approve** updates the record's status to `approved`, immediately enabling Premium access for that user. Clicking **Reject** marks the entry as `rejected`.
-
----
-
-## 🔮 Future Scope
-
-*   **Generative Knowledge Assessments**: Incorporating dynamic multiple-choice quizzes and programming tasks at the end of each chapter, graded in real-time by AI.
-*   **Collaborative Classroom Portals**: Letting students share courses, start study groups, and leave comments on individual chapters.
-*   **Blockchain-Verified Certificates**: Issuing decentralized, tamper-proof PDF completion credentials registered on smart contracts.
-*   **Offline Document Export**: Supporting PDF, EPUB, and JSON conversions of generated courses for offline access.
-*   **AI Mentor Chatbot**: Personalized chatbot interface to answer questions on course content.
-
----
-
-## 📸 Screenshots
-
-Add screenshots of:
-- Home Page
-- Dashboard
-- Course Creation Wizard
-- Generated Curriculum
-- Course Viewer
-- Upgrade Page
-- Admin Panel
-
----
-
 ## 🏁 Conclusion
 
 The **AI Course Generator** demonstrates how combining generative artificial intelligence with automated video search indexes can build highly flexible, personalized learning tools. By solving curriculum rigidity, high creation costs, language barriers, and billing overhead, the platform offers a secure, scalable, and responsive solution that improves the quality of online learning.
@@ -335,8 +288,8 @@ The **AI Course Generator** demonstrates how combining generative artificial int
 ## 👨‍💻 Author
 
 **Sithik Ranjan V R**
-*   B.Tech – Artificial Intelligence and Data Science
-*   Passionate about AI, Full-Stack Development, Generative AI Applications, and Educational Technology.
+* B.Tech – Artificial Intelligence and Data Science
+* Passionate about AI, Full-Stack Development, Generative AI Applications, and Educational Technology.
 
 ---
 
