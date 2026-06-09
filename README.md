@@ -27,7 +27,7 @@ The primary purpose of the AI Course Generator is to democratize education by of
 
 Traditional online education systems (such as Massive Open Online Courses / MOOCs) suffer from several systemic limitations:
 1. **Rigid & Non-Adaptive Curricula**: Existing courses offer static, pre-recorded structures. They fail to adapt to an individual student's specific knowledge gaps, interests, or pacing requirements.
-2. **High Course Creation Overhead**: Creating a complete course layout, compiling explanations, writing source code examples, and recording corresponding video lectures takes subject-matter experts hundreds of hours.
+2. **High Course Creation Overhead**: Creating a complete course outline, compiling explanations, writing source code examples, and recording corresponding video lectures takes subject-matter experts hundreds of hours.
 3. **Monolingual Bias**: High-quality tech-related educational content is predominantly created in English, leaving regional or native-language learners with limited or low-quality materials.
 4. **Information Sifting Fatigue**: Students lose hours switching back and forth between search engines, textual blogs, documentation, and random YouTube playlists to study a single topic in detail.
 5. **Subscription & Transaction Overhead**: Creators and small-scale educational teams suffer high transaction commissions from major card payment gateways and lack support for direct, zero-fee peer-to-peer bank transfers (like UPI references) backed by a secure verification system.
@@ -46,9 +46,12 @@ The **AI Course Generator** addresses these challenges through a unified, automa
 
 ---
 
-## 📐 System Architecture
+## 📐 System Architecture & Workflow
 
-The client application, serverless DB, and external AI models interact as shown in the data-flow diagram below:
+The architecture is divided into decoupled layers designed for low latency, secure authentication, and dynamic generation.
+
+### 1. Architectural Topology Diagram
+The following layout defines how data moves between the React client dashboard, the secure route gates, the ORM database engine, and generative APIs:
 
 ```mermaid
 graph TD
@@ -92,6 +95,41 @@ graph TD
     AdminPanel -->|11. Reads Pending UTRs| Drizzle
     AdminPanel -->|12. Approves/Rejects UTR| Clerk
     Clerk -->|13. Updates User Account Meta| Postgres
+```
+
+### 2. Sequence Workflow: Course Outline & Chapter Content Generation
+This step-by-step transaction model maps the detailed chronological workflow when a user triggers course outline generation followed by full chapter media-content generation:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User
+    participant Frontend as Next.js 16 / React 19 Client
+    participant Auth as Clerk Service
+    participant Gemini as Google Gemini API
+    participant DB as Neon PostgreSQL (Drizzle)
+    participant YouTube as YouTube Data API v3
+
+    User->>Frontend: Provide Course parameters (Category, Topic, Level, Language)
+    Frontend->>Auth: Validate auth session & user premium status (isMember)
+    Auth-->>Frontend: Session validated (Active profile)
+    Frontend->>Gemini: Request course outline syllabus JSON (CourseList schema structure)
+    Gemini-->>Frontend: Return structured syllabus array
+    Frontend->>DB: Save Course Outline row to CourseList table
+    Frontend->>User: Render Syllabus preview cards
+
+    User->>Frontend: Click "Generate Detailed Chapter Content"
+    Frontend->>User: Display Loading Overlay with active step counter
+    
+    loop Process Chapters in Chunks (concurrencyLimit = 3)
+        Frontend->>Gemini: Ask for subchapter text, code examples & explanations
+        Gemini-->>Frontend: Return chapter detail nodes (JSON object/array)
+        Frontend->>YouTube: Query relevant educational videos (Query: Topic + Chapter Name)
+        YouTube-->>Frontend: Return list of matching videoIds
+        Frontend->>DB: Normalize & Insert row into Chapters table (content, videoId, chapterId)
+    end
+
+    Frontend->>User: Redirect to interactive Viewer screen (/course/[courseId]/start)
 ```
 
 ---
