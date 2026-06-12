@@ -8,6 +8,9 @@ import { and, eq } from 'drizzle-orm';
 import CourseBasicInfo from '../_components/CourseBasicInfo';
 import { CourseList } from '@/configs/schema';
 import { FaCopy } from "react-icons/fa6";
+import { HiOutlineHome } from "react-icons/hi";
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
 import { normalizeCourse } from '@/configs/dbNormalize';
 
@@ -58,6 +61,20 @@ function FinishScreen() {
           <FaCopy className='h-5 w-5 text-blue-500 cursor-pointer'
           onClick={async() => navigator.clipboard.writeText(process.env.NEXT_PUBLIC_HOST_NAME+"/course/"+course?.courseId)}/>
         </h2>
+
+      <div className='mt-10 flex flex-col sm:flex-row gap-4 justify-center items-center'>
+        <Link href="/dashboard" className="w-full sm:w-auto">
+          <Button className="w-full sm:w-auto flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-6 px-8 rounded-xl shadow-md hover:shadow-lg transition-all duration-300">
+            <HiOutlineHome className="h-5 w-5" />
+            Return to Home Page
+          </Button>
+        </Link>
+        <Link href={`/course/${course?.courseId}`} className="w-full sm:w-auto">
+          <Button variant="outline" className="w-full sm:w-auto flex items-center justify-center gap-2 py-6 px-8 rounded-xl border-2 border-blue-500 text-blue-500 hover:bg-blue-50 dark:hover:bg-slate-800 font-semibold transition-all duration-300">
+            Start Course
+          </Button>
+        </Link>
+      </div>
     </div>
   );
 }
